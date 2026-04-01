@@ -2,7 +2,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { Search, Sparkles, Plus, FileText, ChevronLeft, ChevronRight, ArrowRight, Loader } from 'lucide-react';
 import api from '../services/api';
 import Uploader from '../components/Uploader';
-
+import ReactMarkdown from 'react-markdown';
 // ── Load Font ──
 const fontLink = document.createElement('link');
 fontLink.href = 'https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap';
@@ -286,9 +286,23 @@ export default function Dashboard({ user, onNavigate }) {
 
                                 {/* The Core Content: No Sparkles, Just Clean Typography */}
                                 <div className="flex flex-col">
-                                    <p className="text-base font-bold text-slate-700 leading-relaxed mb-8">
-                                        {currentChat.a}
-                                    </p>
+                                    <div className="prose prose-slate max-w-none text-slate-700 font-medium leading-relaxed mb-8">
+                                        <ReactMarkdown
+                                            components={{
+                                                // Style code blocks specifically
+                                                code: ({ node, ...props }) => (
+                                                    <span className="bg-slate-900 text-emerald-400 px-2 py-1 rounded-md font-mono text-xs" {...props} />
+                                                ),
+                                                // Style lists
+                                                ul: ({ node, ...props }) => <ul className="list-disc ml-6 space-y-2 mt-4" {...props} />,
+                                                li: ({ node, ...props }) => <li className="text-sm font-bold text-slate-600" {...props} />,
+                                                // Style bold text
+                                                strong: ({ node, ...props }) => <span className="font-black text-[#F0AA67]" {...props} />,
+                                            }}
+                                        >
+                                            {currentChat.a}
+                                        </ReactMarkdown>
+                                    </div>
 
                                     {/* Evidence Section */}
                                     {currentChat.sources?.length > 0 && (
