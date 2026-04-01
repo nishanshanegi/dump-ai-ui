@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import axios from 'axios';
+import api from '../services/api';
 import { Lock, User, ArrowRight, Sparkles, ShieldCheck, Database, FileText, Image as ImageIcon, MessageSquare } from 'lucide-react';
 
 export default function Auth({ onLoginSuccess }) {
@@ -10,7 +10,7 @@ export default function Auth({ onLoginSuccess }) {
 
     const handleDemoLogin = async () => {
         try {
-            const res = await axios.get('http://13.60.250.81:8000/api/v1/auth/demo-login');
+            const res = await api.get('/auth/demo-login');
             localStorage.setItem('token', res.data.access_token);
             onLoginSuccess();
         } catch (err) {
@@ -23,14 +23,21 @@ export default function Auth({ onLoginSuccess }) {
         setError('');
         try {
             if (isLogin) {
+                // Login Logic
                 const params = new URLSearchParams();
                 params.append('username', username);
                 params.append('password', password);
-                const res = await axios.post('http://13.60.250.81:8000/api/v1/auth/login', params);
+
+                const res = await api.post('/auth/login', params); // Use 'api' and relative path
                 localStorage.setItem('token', res.data.access_token);
                 onLoginSuccess();
             } else {
-                await axios.post(`http://13.60.250.81:8000/api/v1/auth/signup?username=${username}&password=${password}`);
+                // Signup Logic (UPDATED for the new Pydantic validation)
+                // WHY: We now send data as a JSON object, not in the URL string.
+                await api.post('/auth/signup', {
+                    username: username,
+                    password: password
+                });
                 setIsLogin(true);
                 alert("Vault created! Please login.");
             }
