@@ -10,7 +10,7 @@ export default function Auth({ onLoginSuccess }) {
 
     const handleDemoLogin = async () => {
         try {
-            const res = await axios.get('http://127.0.0.1:8001/api/v1/auth/demo-login');
+            const res = await axios.get('http://13.60.250.81:8000/api/v1/auth/demo-login');
             localStorage.setItem('token', res.data.access_token);
             onLoginSuccess();
         } catch (err) {
@@ -26,11 +26,11 @@ export default function Auth({ onLoginSuccess }) {
                 const params = new URLSearchParams();
                 params.append('username', username);
                 params.append('password', password);
-                const res = await axios.post('http://127.0.0.1:8001/api/v1/auth/login', params);
+                const res = await axios.post('http://13.60.250.81:8000/api/v1/auth/login', params);
                 localStorage.setItem('token', res.data.access_token);
                 onLoginSuccess();
             } else {
-                await axios.post(`http://127.0.0.1:8001/api/v1/auth/signup?username=${username}&password=${password}`);
+                await axios.post(`http://13.60.250.81:8000/api/v1/auth/signup?username=${username}&password=${password}`);
                 setIsLogin(true);
                 alert("Vault created! Please login.");
             }
